@@ -127,11 +127,118 @@ footer {
 </main>
 <footer><div class="wrap foot"><div><b>Mehar Telecom & CSC Centre</b><br><span data-hi="फलावदा, उत्तर प्रदेश" data-en="Phalauda, Uttar Pradesh">फलावदा, उत्तर प्रदेश</span></div><div>© <span id="year"></span> Mehar Telecom · <span data-hi="सभी अधिकार सुरक्षित" data-en="All rights reserved">सभी अधिकार सुरक्षित</span></div></div></footer>
 <script>
-const langBtn=document.getElementById('langBtn');let lang='hi';
-function setLang(next){lang=next;document.documentElement.lang=lang;document.querySelectorAll('[data-hi][data-en]').forEach(el=>{el.textContent=el.dataset[lang]});langBtn.textContent=lang==='hi'?'EN':'हिंदी';}
-langBtn.addEventListener('click',()=>setLang(lang==='hi'?'en':'hi'));
-document.getElementById('year').textContent=new Date().getFullYear();
-document.querySelectorAll('.card').forEach(card=>{const toggle=()=>{const open=card.classList.toggle('open');card.setAttribute('aria-expanded',String(open));};card.addEventListener('click',e=>{if(e.target.closest('a'))return;toggle();});card.addEventListener('keydown',e=>{if(e.target!==card)return;if(e.key==='Enter'||e.key===' '){e.preventDefault();toggle();}});});
+```html
+<script>
+const langBtn = document.getElementById('langBtn');
+let lang = 'hi';
+
+const translations = {
+  '+ पूरी जानकारी देखने के लिए क्लिक करें': '+ Click to view full details',
+  '+ संपर्क विकल्प देखने के लिए क्लिक करें': '+ Click to view contact options',
+  'मोबाइल रिपेयरिंग में पूछताछ': 'Mobile Repair Enquiry',
+  'डिस्प्ले / टच की समस्या': 'Display or touchscreen issue',
+  'बैटरी जल्दी खत्म होना या फोन चालू न होना': 'Battery drains quickly or phone will not turn on',
+  'चार्जिंग जैक और चार्जिंग की समस्या': 'Charging port or charging issue',
+  'स्पीकर, माइक और आवाज़ की समस्या': 'Speaker, microphone or sound issue',
+  'कैमरा, नेटवर्क और सॉफ्टवेयर की समस्या': 'Camera, network or software issue',
+  'पानी में भीगे मोबाइल की जाँच': 'Inspection of water-damaged phones',
+  'मरम्मत की उपलब्धता और खर्च मोबाइल की जाँच के बाद ही बताया जाएगा।': 'Repair availability and cost will be confirmed after inspection.',
+  'मोबाइल एक्सेसरीज़': 'Mobile Accessories',
+  'चार्जर और USB केबल': 'Chargers and USB cables',
+  'ईयरफोन / हेडफोन': 'Earphones / headphones',
+  'मोबाइल कवर और स्क्रीन गार्ड': 'Phone covers and screen guards',
+  'अन्य उपलब्ध मोबाइल एक्सेसरीज़': 'Other available mobile accessories',
+  'किसी खास मॉडल की एक्सेसरी के लिए पहले कॉल या WhatsApp करके उपलब्धता पूछ लें।': 'Call or WhatsApp first to check availability for your phone model.',
+  'CSC / ऑनलाइन सेवा सहायता': 'CSC / Online Service Assistance',
+  'पैन कार्ड आवेदन संबंधी सहायता': 'PAN card application assistance',
+  'ऑनलाइन फॉर्म भरने में सहायता': 'Help filling online forms',
+  'वोटर कार्ड और अन्य डिजिटल सेवाओं की जानकारी': 'Information about voter cards and other digital services',
+  'सरकारी पोर्टल पर उपलब्ध सेवाओं के लिए सहायता': 'Help with services available on government portals',
+  'सेवा की उपलब्धता, शुल्क और आवश्यक दस्तावेज़ पहले पूछ लें। सरकारी आवेदन की मंज़ूरी संबंधित विभाग पर निर्भर करती है।': 'Please ask about availability, fees and required documents first. Government applications are approved by the relevant department.',
+  'प्रिंटिंग सेवाएँ': 'Printing Services',
+  'दस्तावेज़ प्रिंट': 'Document printing',
+  'ऑनलाइन फॉर्म और PDF प्रिंट': 'Online form and PDF printing',
+  'दस्तावेज़ों की कॉपी / फोटोकॉपी की उपलब्धता पूछें': 'Ask about document copying / photocopy availability',
+  'पेज की संख्या और प्रिंट के प्रकार के अनुसार रेट अलग हो सकता है।': 'Prices may vary by page count and print type.',
+  'फॉर्म और दस्तावेज़ सहायता': 'Forms and Document Help',
+  'ऑनलाइन आवेदन फॉर्म भरने में सहायता': 'Help filling online application forms',
+  'आवश्यक दस्तावेज़ों की सूची समझने में मदद': 'Help understanding the required document list',
+  'आवेदन की जानकारी और स्थिति देखने के लिए मार्गदर्शन': 'Guidance on checking application details and status',
+  'कृपया OTP, पासवर्ड या बैंक PIN किसी के साथ साझा न करें।': 'Never share your OTP, password or bank PIN.',
+  'सीधे संपर्क करें': 'Contact Us',
+  'किसी सेवा की जानकारी चाहिए? फोन या WhatsApp पर पूछें।': 'Need service information? Call or message us on WhatsApp.',
+  'पता: Ward 1, Mohalla Jogiyan, Phalauda, Uttar Pradesh': 'Address: Ward 1, Mohalla Jogiyan, Phalauda, Uttar Pradesh',
+  '📞 कॉल करें': '📞 Call Now',
+  'WhatsApp पूछताछ': 'WhatsApp Enquiry',
+  '📞 अभी कॉल करें': '📞 Call Now',
+  'आने से पहले सेवा की उपलब्धता की पुष्टि कर लें।': 'Please confirm service availability before visiting.',
+  'आने का पता': 'Find Our Location',
+  'Google Maps पर खोजें ↗': 'Search on Google Maps ↗',
+  'नोट: यह वेबसाइट जानकारी देने के लिए है। सरकारी सेवाओं की मंज़ूरी/जारी करना संबंधित विभाग के नियमों और उपलब्ध सेवाओं पर निर्भर है।': 'Note: This website is for information. Government service approval or issuance depends on the relevant department and service availability.',
+  'फलावदा, उत्तर प्रदेश': 'Phalauda, Uttar Pradesh',
+  'सभी अधिकार सुरक्षित': 'All rights reserved'
+};
+
+const reverseTranslations = Object.fromEntries(
+  Object.entries(translations).map(([hi, en]) => [en, hi])
+);
+
+function setLang(next) {
+  lang = next;
+  document.documentElement.lang = lang;
+
+  document.querySelectorAll('[data-hi][data-en]').forEach(el => {
+    el.textContent = el.getAttribute('data-' + lang);
+  });
+
+  const walker = document.createTreeWalker(
+    document.body,
+    NodeFilter.SHOW_TEXT
+  );
+
+  let node;
+  while ((node = walker.nextNode())) {
+    const original = node.nodeValue;
+    const trimmed = original.trim();
+    const translated = lang === 'en'
+      ? translations[trimmed]
+      : reverseTranslations[trimmed];
+
+    if (translated) {
+      node.nodeValue = original.replace(trimmed, translated);
+    }
+  }
+
+  langBtn.textContent = lang === 'hi' ? 'EN' : 'हिंदी';
+}
+
+langBtn.addEventListener('click', () => {
+  setLang(lang === 'hi' ? 'en' : 'hi');
+});
+
+document.getElementById('year').textContent =
+  new Date().getFullYear();
+
+document.querySelectorAll('.card').forEach(card => {
+  const toggle = () => {
+    const open = card.classList.toggle('open');
+    card.setAttribute('aria-expanded', String(open));
+  };
+
+  card.addEventListener('click', e => {
+    if (e.target.closest('a')) return;
+    toggle();
+  });
+
+  card.addEventListener('keydown', e => {
+    if (e.target !== card) return;
+
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      toggle();
+    }
+  });
+});
 </script>
 </body>
 </html>
